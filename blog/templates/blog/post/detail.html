@@ -1,0 +1,59 @@
+{%extends "blog/base.html"%}
+    {% block title %}
+        {{post.title}}
+    {%endblock%}
+{%block content%}
+    <div class="d-flex justify-content-center">
+        <div class="mt-3 bg-primary w-50 border border-3 bg-opacity-75" style="border-radius: 10px">
+            <h1 class="text-center mt-2 font-monospace">{{post.title}}</h1>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <p class="date">Published {{post.publish}} by {{post.author}}</p>
+    </div>
+    <div class="d-flex justify-content-center">
+        {{post.body|linebreaks}}
+    </div>
+    <div>
+    {% with comments.count as total_comments %}
+        <div class="d-flex justify-content-center">
+            <div class="bg-danger bg-opacity-25 w-25 border border-5 " style="border-radius: 10px">
+                <h4 class="text-center mt-2">{{ total_comments }} comment {{ total_comments | pluralize }}</h4>
+            </div>
+
+        </div>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="d-flex justify-content-center">
+            <p>
+                Comment {{ forloop.counter }} by {{ comment.name }} {{ comment.created }}
+            </p>
+            <p>
+                {{ comment.body | linebreaks }}
+            </p>
+        </div>
+        {% empty %}
+        <hr>
+        <p class="text-center font-monospace    ">There are no comments yet</p>
+    {% endfor %}
+    {% if new_comment %}
+        <h2>Your comment has been added.</h2>
+    {% else %}
+        <div class="d-flex justify-content-center">
+            <div class="mt-3 bg-transparent w-50 border border-3 bg-opacity-75" style="border-radius: 10px">
+                <h2 class="text-center mt-2 font-monospace">Add a new comment</h2>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <form action="." method="post">
+                    {{ form_comment.as_p }}
+                {% csrf_token %}
+                <p class="d-flex justify-content-center">
+                    <input class="btn btn-danger" type="submit" value="Add comment">
+                </p>
+            </form>
+        </div>
+    {% endif %}
+
+    </div>
+{%endblock%}
